@@ -1,0 +1,17 @@
+github.com/giantswarm/microerror v0.0.0-20190206215454-dc32fd459f94 h1:OInJskbw58W3XYrjCvKOdMyuMeR0+3Pm+YZJV7e5qL8=
+github.com/giantswarm/microerror v0.0.0-20190206215454-dc32fd459f94/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
+github.com/giantswarm/micrologger v0.0.0-20190118112544-0926d9b7c541 h1:FFIytfpzwoorYU6DkmgVfS3kqoAoQNzOsXx7wW5FsXA=
+github.com/giantswarm/micrologger v0.0.0-20190118112544-0926d9b7c541/go.mod h1:2O9GG1AfKI8px8oseWx+TTD6A6aEdUo16ZjAKv2wOVk=
+github.com/go-kit/kit v0.8.0 h1:Wz+5lgoB0kkuqLEc6NVmwRknTKP6dTGbSqvhZtBI/j0=
+github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
+github.com/go-logfmt/logfmt v0.4.0 h1:MP4Eh7ZCb31lleYCFuwm0oe4/YGak+5l1vA2NOE80nA=
+github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
+github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
+github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
+github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 h1:tGpfbOOO0SV3qtMUx8O9RbJeei6VDBwnpQQ0JYIFaVg=
+github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53/go.mod h1:ZtgUe3RyZisw/AlQjgU9DeO3hqUH9E/bkreI2FLg/QY=
+github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
+github.com/spf13/cobra v0.0.3 h1:ZlrZ4XsMRm04Fr5pSFxBgfND2EBVa1nLpiy1stUsX/8=
+github.com/spf13/cobra v0.0.3/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=
+github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
+github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
