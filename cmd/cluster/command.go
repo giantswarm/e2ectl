@@ -1,37 +1,45 @@
-package version
+package cluster
 
 import (
 	"io"
-	"os"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/e2ectl/cmd/cluster/create"
 )
 
 const (
-	name        = "version"
-	description = "Prints version information."
+	name        = "cluster"
+	description = "Manage clusters."
 )
 
 type Config struct {
 	Logger micrologger.Logger
 	Stderr io.Writer
 	Stdout io.Writer
-
-	GitCommit string
-	Source    string
 }
 
 func New(config Config) (*cobra.Command, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	if config.Stderr == nil {
-		config.Stderr = os.Stderr
-	}
-	if config.Stdout == nil {
-		config.Stdout = os.Stdout
+
+	var err error
+
+	var createCmd *cobra.Command
+	{
+		c := create.Config{
+			Logger: config.Logger,
+			Stderr: config.Stderr,
+			Stdout: config.Stdout,
+		}
+
+		createCmd, err = create.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	f := &flag{}
@@ -41,9 +49,6 @@ func New(config Config) (*cobra.Command, error) {
 		logger: config.Logger,
 		stderr: config.Stderr,
 		stdout: config.Stdout,
-
-		gitCommit: config.GitCommit,
-		source:    config.Source,
 	}
 
 	c := &cobra.Command{
@@ -54,6 +59,8 @@ func New(config Config) (*cobra.Command, error) {
 	}
 
 	f.Init(c)
+
+	c.AddCommand(createCmd)
 
 	return c, nil
 }

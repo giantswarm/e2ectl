@@ -52,7 +52,7 @@ func mainWithError() error {
 
 	err = rootCommand.Execute()
 	if err != nil {
-		logger.LogCtx(ctx, "level", "error", "message", "failed to execute root command", "stack", fmt.Sprintf("%#v", err))
+		logger.LogCtx(ctx, "level", "error", "message", "failed to execute command", "stack", fmt.Sprintf("%#v", err))
 		os.Exit(1)
 	}
 

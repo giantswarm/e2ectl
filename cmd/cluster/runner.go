@@ -1,10 +1,8 @@
-package version
+package cluster
 
 import (
 	"context"
-	"fmt"
 	"io"
-	"runtime"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -16,9 +14,6 @@ type runner struct {
 	logger micrologger.Logger
 	stdout io.Writer
 	stderr io.Writer
-
-	gitCommit string
-	source    string
 }
 
 func (r *runner) Run(cmd *cobra.Command, args []string) error {
@@ -38,10 +33,10 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
-	fmt.Fprintf(r.stdout, "Git Commit:     %s\n", r.gitCommit)
-	fmt.Fprintf(r.stdout, "Go Version:     %s\n", runtime.Version())
-	fmt.Fprintf(r.stdout, "OS / Arch:      %s / %s\n", runtime.GOOS, runtime.GOARCH)
-	fmt.Fprintf(r.stdout, "Source:         %s\n", r.source)
+	err := cmd.Help()
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
 	return nil
 }

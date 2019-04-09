@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/e2ectl/cmd/cluster"
 	"github.com/giantswarm/e2ectl/cmd/version"
 )
 
@@ -46,6 +47,20 @@ func New(config Config) (*cobra.Command, error) {
 
 	var err error
 
+	var clusterCmd *cobra.Command
+	{
+		c := cluster.Config{
+			Logger: config.Logger,
+			Stderr: config.Stderr,
+			Stdout: config.Stdout,
+		}
+
+		clusterCmd, err = cluster.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var versionCmd *cobra.Command
 	{
 		c := version.Config{
@@ -76,12 +91,13 @@ func New(config Config) (*cobra.Command, error) {
 		Use:          name,
 		Short:        description,
 		Long:         description,
-		RunE:         r.RunWithError,
+		RunE:         r.Run,
 		SilenceUsage: true,
 	}
 
 	f.Init(c)
 
+	c.AddCommand(clusterCmd)
 	c.AddCommand(versionCmd)
 
 	return c, nil
