@@ -73,10 +73,11 @@ func New(config Config) (*cobra.Command, error) {
 	}
 
 	c := &cobra.Command{
-		Use:   name,
-		Short: description,
-		Long:  description,
-		RunE:  r.RunWithError,
+		Use:          name,
+		Short:        description,
+		Long:         description,
+		RunE:         r.RunWithError,
+		SilenceUsage: true,
 	}
 
 	f.Init(c)
