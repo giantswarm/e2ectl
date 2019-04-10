@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/e2ectl/cmd/cluster/create"
+	"github.com/giantswarm/e2ectl/cmd/cluster/delete"
 )
 
 const (
@@ -42,6 +43,20 @@ func New(config Config) (*cobra.Command, error) {
 		}
 	}
 
+	var deleteCmd *cobra.Command
+	{
+		c := delete.Config{
+			Logger: config.Logger,
+			Stderr: config.Stderr,
+			Stdout: config.Stdout,
+		}
+
+		deleteCmd, err = delete.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	f := &flag{}
 
 	r := &runner{
@@ -61,6 +76,7 @@ func New(config Config) (*cobra.Command, error) {
 	f.Init(c)
 
 	c.AddCommand(createCmd)
+	c.AddCommand(deleteCmd)
 
 	return c, nil
 }
