@@ -3,6 +3,7 @@ package create
 import (
 	"context"
 	"io"
+	"os"
 	"time"
 
 	"github.com/giantswarm/microerror"
@@ -14,7 +15,8 @@ import (
 )
 
 const (
-	waitForReady = 2 * time.Minute
+	waitForReady     = 2 * time.Minute
+	envE2EKubeconfig = "E2E_KUBECONFIG"
 )
 
 type runner struct {
@@ -43,11 +45,20 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
 	var err error
 
+	kindCtx := cluster.NewContext(r.flag.Name)
+
 	{
-		kindCtx := cluster.NewContext(r.flag.Name)
 		cfg := &config.Cluster{}
 
 		err = kindCtx.Create(cfg, create.Retain(r.flag.Retain), create.WaitForReady(waitForReady))
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	{
+		kubeconfigPath := kindCtx.KubeConfigPath()
+		err := os.Setenv(envE2EKubeconfig, kubeconfigPath)
 		if err != nil {
 			return microerror.Mask(err)
 		}
