@@ -32,9 +32,3 @@ jobs:
         root: .
         paths:
           - ./e2ectl 
-
-    - deploy:
-        command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
-          fi
