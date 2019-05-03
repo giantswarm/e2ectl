@@ -1,23 +1,39 @@
 package create
 
 import (
+	"strings"
+
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
+
+	"sigs.k8s.io/kind/pkg/cluster/config/defaults"
 )
 
 const (
-	flagName   = "name"
-	flagRetain = "retain"
+	flagListVersions = "list-versions"
+	flagName         = "name"
+	flagRetain       = "retain"
+	flagVersion      = "version"
 )
 
 type flag struct {
-	Name   string
-	Retain bool
+	ListVersions bool
+	Name         string
+	Retain       bool
+	Version      string
 }
 
 func (f *flag) Init(cmd *cobra.Command) {
-	cmd.Flags().StringVar(&f.Name, flagName, "kind", `Name of e2e cluster, defaults to "kind".`)
-	cmd.Flags().BoolVar(&f.Retain, flagRetain, true, `Retain nodes for debugging when cluster creation fails, defaults to true.`)
+	cmd.Flags().BoolVar(&f.ListVersions, flagListVersions, false, `List available Kubernetes version.`)
+	cmd.Flags().StringVar(&f.Name, flagName, "kind", `Name of e2e cluster.`)
+	cmd.Flags().BoolVar(&f.Retain, flagRetain, true, `Retain nodes for debugging when cluster creation fails.`)
+
+	var defaultVersion string
+	s := strings.Split(defaults.Image, ":")
+	if len(s) >= 2 {
+		defaultVersion = s[1]
+	}
+	cmd.Flags().StringVar(&f.Version, flagVersion, defaultVersion, `Kubernetes version to run.`)
 }
 
 func (f *flag) Validate() error {
