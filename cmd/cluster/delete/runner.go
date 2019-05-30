@@ -41,6 +41,17 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
 	var err error
 
+	var known bool
+	{
+		known, err = cluster.IsKnown(r.flag.Name)
+		if err != nil {
+			return err
+		}
+		if !known {
+			return microerror.Maskf(invalidFlagError, "no cluster with name %#q", r.flag.Name)
+		}
+	}
+
 	{
 		kindCtx := cluster.NewContext(r.flag.Name)
 

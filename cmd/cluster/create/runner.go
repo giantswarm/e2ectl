@@ -61,6 +61,17 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		return nil
 	}
 
+	var known bool
+	{
+		known, err = cluster.IsKnown(r.flag.Name)
+		if err != nil {
+			return err
+		}
+		if known {
+			return microerror.Maskf(invalidFlagError, "cluster with name %#q already exists", r.flag.Name)
+		}
+	}
+
 	kindCtx := cluster.NewContext(r.flag.Name)
 	cfg := &config.Cluster{}
 
