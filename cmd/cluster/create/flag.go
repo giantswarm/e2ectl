@@ -14,6 +14,7 @@ const (
 	flagName         = "name"
 	flagRetain       = "retain"
 	flagVersion      = "version"
+	flagWorkerCount  = "worker-count"
 )
 
 type flag struct {
@@ -21,12 +22,14 @@ type flag struct {
 	Name         string
 	Retain       bool
 	Version      string
+	WorkerCount  int
 }
 
 func (f *flag) Init(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&f.ListVersions, flagListVersions, false, `List available Kubernetes version.`)
 	cmd.Flags().StringVar(&f.Name, flagName, "kind", `Name of e2e cluster.`)
 	cmd.Flags().BoolVar(&f.Retain, flagRetain, true, `Retain nodes for debugging when cluster creation fails.`)
+	cmd.Flags().IntVar(&f.WorkerCount, flagWorkerCount, 0, `Number of worker nodes to provision.`)
 
 	var defaultVersion string
 	s := strings.Split(defaults.Image, ":")

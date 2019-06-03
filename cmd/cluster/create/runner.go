@@ -73,18 +73,30 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	}
 
 	kindCtx := cluster.NewContext(r.flag.Name)
+
 	cfg := &config.Cluster{}
+	nodes := []config.Node{}
 
 	if r.flag.Version != "" {
 		image := fmt.Sprintf("%s:%s", nodeImage, r.flag.Version)
 
-		// Apply image override to all the Nodes defined in Config
-		cfg.Nodes = []config.Node{
-			{
-				Role:  config.ControlPlaneRole,
-				Image: image,
-			},
+		controlPlane := config.Node{
+			Image: image,
+			Role:  config.ControlPlaneRole,
 		}
+
+		nodes = append(nodes, controlPlane)
+
+		for i := 0; i < r.flag.WorkerCount; i++ {
+			worker := config.Node{
+				Image: image,
+				Role:  config.WorkerRole,
+			}
+
+			nodes = append(nodes, worker)
+		}
+
+		cfg.Nodes = nodes
 
 		err := cfg.Validate()
 		if err != nil {
