@@ -19,8 +19,7 @@ import (
 
 const (
 	envE2EKubeconfig = "E2E_KUBECONFIG"
-	listVersionsURL  = "https://registry.hub.docker.com/v1/repositories/kindest/node/tags"
-	nodeImage        = "kindest/node"
+	listVersionsURL  = "https://quay.io/api/v1/repository/giantswarm/kind-node/tag/"
 	waitForReady     = 2 * time.Minute
 )
 
@@ -75,10 +74,11 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	kindCtx := cluster.NewContext(r.flag.Name)
 
 	cfg := &config.Cluster{}
+	config.SetDefaults_Cluster(cfg)
 	nodes := []config.Node{}
 
 	if r.flag.Version != "" {
-		image := fmt.Sprintf("%s:%s", nodeImage, r.flag.Version)
+		image := fmt.Sprintf("%s:%s", r.flag.Image, r.flag.Version)
 
 		controlPlane := config.Node{
 			Image: image,
@@ -129,8 +129,10 @@ func listVersions() ([]string, error) {
 	}
 	defer resp.Body.Close()
 
-	data := []struct {
-		Name string `json:"name"`
+	data := struct {
+		Tags []struct {
+			Name string `json:"name"`
+		} `json:"tags"`
 	}{}
 
 	err = json.NewDecoder(resp.Body).Decode(&data)
@@ -139,8 +141,8 @@ func listVersions() ([]string, error) {
 	}
 
 	var versions []string
-	for _, version := range data {
-		versions = append(versions, version.Name)
+	for _, tag := range data.Tags {
+		versions = append(versions, tag.Name)
 	}
 
 	return versions, nil

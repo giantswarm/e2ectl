@@ -1,15 +1,12 @@
 package create
 
 import (
-	"strings"
-
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
-
-	"sigs.k8s.io/kind/pkg/cluster/config/defaults"
 )
 
 const (
+	flagImage        = "image"
 	flagListVersions = "list-versions"
 	flagName         = "name"
 	flagRetain       = "retain"
@@ -18,6 +15,7 @@ const (
 )
 
 type flag struct {
+	Image        string
 	ListVersions bool
 	Name         string
 	Retain       bool
@@ -26,16 +24,17 @@ type flag struct {
 }
 
 func (f *flag) Init(cmd *cobra.Command) {
-	cmd.Flags().BoolVar(&f.ListVersions, flagListVersions, false, `List available Kubernetes version.`)
+	cmd.Flags().StringVar(&f.Image, flagImage, "quay.io/giantswarm/kind-node", `Kubernetes image to run.`)
+	cmd.Flags().BoolVar(&f.ListVersions, flagListVersions, false, `List available Kubernetes versions.`)
 	cmd.Flags().StringVar(&f.Name, flagName, "kind", `Name of e2e cluster.`)
 	cmd.Flags().BoolVar(&f.Retain, flagRetain, true, `Retain nodes for debugging when cluster creation fails.`)
 	cmd.Flags().IntVar(&f.WorkerCount, flagWorkerCount, 0, `Number of worker nodes to provision.`)
 
-	var defaultVersion string
-	s := strings.Split(defaults.Image, ":")
-	if len(s) >= 2 {
-		defaultVersion = s[1]
+	versions, err := listVersions()
+	if err != nil {
+		panic("Failed to lookup available versions")
 	}
+	defaultVersion := versions[0]
 	cmd.Flags().StringVar(&f.Version, flagVersion, defaultVersion, `Kubernetes version to run.`)
 }
 
