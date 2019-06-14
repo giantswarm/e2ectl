@@ -14,7 +14,7 @@ type flag struct {
 }
 
 func (f *flag) Init(cmd *cobra.Command) {
-	cmd.Flags().StringVar(&f.Name, flagName, "kind", `Name of e2e cluster, defaults to "kind".`)
+	cmd.Flags().StringVar(&f.Name, flagName, "kind", `Name of e2e cluster.`)
 }
 
 func (f *flag) Validate() error {

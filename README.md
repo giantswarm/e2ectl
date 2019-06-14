@@ -63,7 +63,7 @@ Usage:
 
 Flags:
   -h, --help          help for delete
-      --name string   Name of e2e cluster, defaults to "kind". (default "kind")
+      --name string   Name of e2e cluster. (default "kind")
 ```
 
 ## Testing locally
