@@ -172,6 +172,8 @@ sigs.k8s.io/kind v0.0.0-20190405235428-578ac5843ea3 h1:I+h+HOEmOVsFR11MpJZFsiMPO
 sigs.k8s.io/kind v0.0.0-20190405235428-578ac5843ea3/go.mod h1:5AWVsbr5tH8e/oMjlJhj0uy5rUF2PgEKXnwXldtEG18=
 sigs.k8s.io/kind v0.3.0 h1:TUIRsJZy123ejyWECuYOU2XzSsIsauoqaeoUGsfdj6k=
 sigs.k8s.io/kind v0.3.0/go.mod h1:bgGo2cWxKGQ7esVxtGp9H17Ttlexju92CTMjCg08HNQ=
+sigs.k8s.io/kind v0.4.0 h1:C/QMxmF5Sp3yyKkTJ5+VJPcclZyu/JV8wLyihZbsHaI=
+sigs.k8s.io/kind v0.4.0/go.mod h1:bgGo2cWxKGQ7esVxtGp9H17Ttlexju92CTMjCg08HNQ=
 sigs.k8s.io/kustomize v2.0.1+incompatible h1:rfBSJpFHTgrxoQ79w5JnTo00KUuod/U7mwIf36ozNw0=
 sigs.k8s.io/kustomize v2.0.1+incompatible/go.mod h1:MkjgH3RdOWrievjo6c9T245dYlB5QeXV4WCbnt/PEpU=
 sigs.k8s.io/kustomize v2.0.3+incompatible h1:JUufWFNlI44MdtnjUqVnvh29rR37PQFzPbLXqhyOyX0=

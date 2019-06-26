@@ -21,5 +21,5 @@ require (
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
 	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
 	k8s.io/code-generator v0.0.0-20181116211957-405721ab9678 // indirect
-	sigs.k8s.io/kind v0.3.0
+	sigs.k8s.io/kind v0.4.0
 )
