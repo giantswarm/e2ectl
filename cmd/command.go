@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/e2ectl/cmd/cluster"
+	"github.com/giantswarm/e2ectl/cmd/kubeconfig"
 	"github.com/giantswarm/e2ectl/cmd/version"
 )
 
@@ -61,6 +62,20 @@ func New(config Config) (*cobra.Command, error) {
 		}
 	}
 
+	var kubeconfigCmd *cobra.Command
+	{
+		c := kubeconfig.Config{
+			Logger: config.Logger,
+			Stderr: config.Stderr,
+			Stdout: config.Stdout,
+		}
+
+		kubeconfigCmd, err = kubeconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var versionCmd *cobra.Command
 	{
 		c := version.Config{
@@ -98,6 +113,7 @@ func New(config Config) (*cobra.Command, error) {
 	f.Init(c)
 
 	c.AddCommand(clusterCmd)
+	c.AddCommand(kubeconfigCmd)
 	c.AddCommand(versionCmd)
 
 	return c, nil

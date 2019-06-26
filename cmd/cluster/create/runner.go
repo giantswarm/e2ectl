@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/giantswarm/microerror"
@@ -18,9 +17,8 @@ import (
 )
 
 const (
-	envE2EKubeconfig = "E2E_KUBECONFIG"
-	listVersionsURL  = "https://quay.io/api/v1/repository/giantswarm/kind-node/tag/"
-	waitForReady     = 2 * time.Minute
+	listVersionsURL = "https://quay.io/api/v1/repository/giantswarm/kind-node/tag/"
+	waitForReady    = 2 * time.Minute
 )
 
 type runner struct {
@@ -106,14 +104,6 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 
 	{
 		err = kindCtx.Create(cfg, create.Retain(r.flag.Retain), create.WaitForReady(waitForReady))
-		if err != nil {
-			return microerror.Mask(err)
-		}
-	}
-
-	{
-		kubeconfigPath := kindCtx.KubeConfigPath()
-		err := os.Setenv(envE2EKubeconfig, kubeconfigPath)
 		if err != nil {
 			return microerror.Mask(err)
 		}

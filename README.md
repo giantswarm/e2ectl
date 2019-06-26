@@ -66,6 +66,24 @@ Flags:
       --name string   Name of e2e cluster. (default "kind")
 ```
 
+### Get cluster's kubeconfig file path
+
+- Outputs the kubeconfig file path.
+
+```bash
+$ e2ectl kubeconfig file-path -h
+
+Retrieves cluster kubeconfig file path for use in e2e tests.
+
+Usage:
+  e2ectl kubeconfig file-path [flags]
+
+Flags:
+  -h, --help          help for file-path
+      --name string   Name of e2e cluster. (default "kind")
+
+```
+
 ## Testing locally
 
 ### Use kubectl
