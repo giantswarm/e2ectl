@@ -1,4 +1,4 @@
-package filepath
+package path
 
 import (
 	"io"
@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	name        = "file-path"
+	name        = "path"
 	description = "Retrieves cluster kubeconfig file path for use in e2e tests."
 )
 

@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/e2ectl/cmd/kubeconfig/filepath"
+	"github.com/giantswarm/e2ectl/cmd/kubeconfig/path"
 )
 
 const (
@@ -28,15 +28,15 @@ func New(config Config) (*cobra.Command, error) {
 
 	var err error
 
-	var filepathCmd *cobra.Command
+	var pathCmd *cobra.Command
 	{
-		c := filepath.Config{
+		c := path.Config{
 			Logger: config.Logger,
 			Stderr: config.Stderr,
 			Stdout: config.Stdout,
 		}
 
-		filepathCmd, err = filepath.New(c)
+		pathCmd, err = path.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -60,7 +60,7 @@ func New(config Config) (*cobra.Command, error) {
 
 	f.Init(c)
 
-	c.AddCommand(filepathCmd)
+	c.AddCommand(pathCmd)
 
 	return c, nil
 }

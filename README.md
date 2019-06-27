@@ -71,15 +71,15 @@ Flags:
 - Outputs the kubeconfig file path.
 
 ```bash
-$ e2ectl kubeconfig file-path -h
+$ e2ectl kubeconfig path -h
 
 Retrieves cluster kubeconfig file path for use in e2e tests.
 
 Usage:
-  e2ectl kubeconfig file-path [flags]
+  e2ectl kubeconfig path [flags]
 
 Flags:
-  -h, --help          help for file-path
+  -h, --help          help for path
       --name string   Name of e2e cluster. (default "kind")
 
 ```
