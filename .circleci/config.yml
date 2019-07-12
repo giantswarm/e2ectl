@@ -32,3 +32,26 @@ jobs:
         root: .
         paths:
           - ./e2ectl 
+
+  github-release:
+    working_directory: /home/circleci/.go_workspace/src/github.com/giantswarm/e2ectl
+    machine: true
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: .
+
+      - run: ./github-release.sh $CIRCLE_PROJECT_REPONAME $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
+
+workflows:
+  version: 2
+  build_e2e:
+    jobs:
+      - build
+      - github-release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
