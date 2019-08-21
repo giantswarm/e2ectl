@@ -1,14 +1,12 @@
-package path
+package logs
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
-	"sigs.k8s.io/kind/pkg/cluster"
 )
 
 type runner struct {
@@ -35,19 +33,10 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
-	{
-		known, err := cluster.IsKnown(r.flag.Name)
-		if err != nil {
-			return err
-		}
-		if !known {
-			return microerror.Maskf(invalidFlagError, "cluster with name %#q doesn't exist", r.flag.Name)
-		}
+	err := cmd.Help()
+	if err != nil {
+		return microerror.Mask(err)
 	}
-
-	kindCtx := cluster.NewContext(r.flag.Name)
-	kubeconfigPath := kindCtx.KubeConfigPath()
-	fmt.Println(kubeconfigPath)
 
 	return nil
 }

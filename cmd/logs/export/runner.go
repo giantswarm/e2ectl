@@ -1,4 +1,4 @@
-package path
+package export
 
 import (
 	"context"
@@ -35,19 +35,28 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
+	var err error
+
 	{
 		known, err := cluster.IsKnown(r.flag.Name)
 		if err != nil {
 			return err
 		}
 		if !known {
-			return microerror.Maskf(invalidFlagError, "cluster with name %#q doesn't exist", r.flag.Name)
+			return microerror.Maskf(invalidFlagError, "no cluster with name %#q", r.flag.Name)
 		}
 	}
 
-	kindCtx := cluster.NewContext(r.flag.Name)
-	kubeconfigPath := kindCtx.KubeConfigPath()
-	fmt.Println(kubeconfigPath)
+	{
+		kindCtx := cluster.NewContext(r.flag.Name)
+
+		err = kindCtx.CollectLogs(r.flag.LogsDir)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		fmt.Printf("exported logs for cluster %#q to %#q\n", r.flag.Name, r.flag.LogsDir)
+	}
 
 	return nil
 }

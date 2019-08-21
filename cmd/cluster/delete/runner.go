@@ -3,16 +3,11 @@ package delete
 import (
 	"context"
 	"io"
-	"time"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/kind/pkg/cluster"
-)
-
-const (
-	waitForReady = 2 * time.Minute
 )
 
 type runner struct {
@@ -41,9 +36,8 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
 	var err error
 
-	var known bool
 	{
-		known, err = cluster.IsKnown(r.flag.Name)
+		known, err := cluster.IsKnown(r.flag.Name)
 		if err != nil {
 			return err
 		}

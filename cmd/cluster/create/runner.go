@@ -58,9 +58,8 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		return nil
 	}
 
-	var known bool
 	{
-		known, err = cluster.IsKnown(r.flag.Name)
+		known, err := cluster.IsKnown(r.flag.Name)
 		if err != nil {
 			return err
 		}
