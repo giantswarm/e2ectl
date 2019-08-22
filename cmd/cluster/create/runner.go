@@ -12,7 +12,6 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/kind/pkg/cluster"
-	"sigs.k8s.io/kind/pkg/cluster/config"
 	"sigs.k8s.io/kind/pkg/cluster/create"
 )
 
@@ -70,39 +69,14 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 
 	kindCtx := cluster.NewContext(r.flag.Name)
 
-	cfg := &config.Cluster{}
-	config.SetDefaults_Cluster(cfg)
-	nodes := []config.Node{}
-
+	clusterOptions := []create.ClusterOption{create.Retain(r.flag.Retain), create.WaitForReady(waitForReady)}
 	if r.flag.Version != "" {
 		image := fmt.Sprintf("%s:%s", r.flag.Image, r.flag.Version)
-
-		controlPlane := config.Node{
-			Image: image,
-			Role:  config.ControlPlaneRole,
-		}
-
-		nodes = append(nodes, controlPlane)
-
-		for i := 0; i < r.flag.WorkerCount; i++ {
-			worker := config.Node{
-				Image: image,
-				Role:  config.WorkerRole,
-			}
-
-			nodes = append(nodes, worker)
-		}
-
-		cfg.Nodes = nodes
-
-		err := cfg.Validate()
-		if err != nil {
-			return microerror.Mask(err)
-		}
+		clusterOptions = append(clusterOptions, create.WithNodeImage(image))
 	}
 
 	{
-		err = kindCtx.Create(cfg, create.Retain(r.flag.Retain), create.WaitForReady(waitForReady))
+		err = kindCtx.Create(clusterOptions...)
 		if err != nil {
 			return microerror.Mask(err)
 		}
