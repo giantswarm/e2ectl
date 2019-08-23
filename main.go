@@ -7,6 +7,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/e2ectl/cmd"
@@ -38,10 +39,13 @@ func mainWithError() error {
 		}
 	}
 
+	fileSystem := afero.NewOsFs()
+
 	var rootCommand *cobra.Command
 	{
 		c := cmd.Config{
-			Logger: logger,
+			FileSystem: fileSystem,
+			Logger:     logger,
 
 			GitCommit: gitCommit,
 			Source:    source,

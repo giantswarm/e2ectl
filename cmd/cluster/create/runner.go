@@ -1,15 +1,18 @@
 package create
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"text/template"
 	"time"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/kind/pkg/cluster/create"
@@ -21,10 +24,11 @@ const (
 )
 
 type runner struct {
-	flag   *flag
-	logger micrologger.Logger
-	stdout io.Writer
-	stderr io.Writer
+	fileSystem afero.Fs
+	flag       *flag
+	logger     micrologger.Logger
+	stdout     io.Writer
+	stderr     io.Writer
 }
 
 func (r *runner) Run(cmd *cobra.Command, args []string) error {
@@ -67,9 +71,72 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		}
 	}
 
+	var configData string
+
+	{
+		// Define nodes.
+		nodes := []KindNode{
+			{
+				Type: "control-plane",
+			},
+		}
+
+		for i := 0; i < r.flag.WorkerCount; i++ {
+			node := KindNode{
+				Type: "worker",
+			}
+
+			nodes = append(nodes, node)
+		}
+
+		data := KindConfig{
+			Nodes: nodes,
+		}
+
+		// Render kind config file.
+		t, err := template.New("kind").Parse(kindConfigTemplate)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		b := new(bytes.Buffer)
+		err = t.Execute(b, data)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		configData = b.String()
+	}
+
+	var configFile afero.File
+
+	defer func() {
+		err := r.fileSystem.Remove(configFile.Name())
+		if err != nil {
+			r.logger.LogCtx(ctx, "level", "error", "message", fmt.Sprintf("deletion of %q failed", configFile.Name()), "stack", fmt.Sprintf("%#v", err))
+		}
+	}()
+
+	{
+		configFile, err = afero.TempFile(r.fileSystem, "", "kind-config.yaml")
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		_, err = configFile.WriteString(configData)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
 	kindCtx := cluster.NewContext(r.flag.Name)
 
-	clusterOptions := []create.ClusterOption{create.Retain(r.flag.Retain), create.WaitForReady(waitForReady)}
+	clusterOptions := []create.ClusterOption{
+		create.Retain(r.flag.Retain),
+		create.WaitForReady(waitForReady),
+		create.WithConfigFile(configFile.Name()),
+	}
+
 	if r.flag.Version != "" {
 		image := fmt.Sprintf("%s:%s", r.flag.Image, r.flag.Version)
 		clusterOptions = append(clusterOptions, create.WithNodeImage(image))

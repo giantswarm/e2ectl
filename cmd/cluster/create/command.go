@@ -6,6 +6,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +16,10 @@ const (
 )
 
 type Config struct {
-	Logger micrologger.Logger
-	Stderr io.Writer
-	Stdout io.Writer
+	FileSystem afero.Fs
+	Logger     micrologger.Logger
+	Stderr     io.Writer
+	Stdout     io.Writer
 }
 
 func New(config Config) (*cobra.Command, error) {
@@ -34,10 +36,11 @@ func New(config Config) (*cobra.Command, error) {
 	f := &flag{}
 
 	r := &runner{
-		flag:   f,
-		logger: config.Logger,
-		stderr: config.Stderr,
-		stdout: config.Stdout,
+		fileSystem: config.FileSystem,
+		flag:       f,
+		logger:     config.Logger,
+		stderr:     config.Stderr,
+		stdout:     config.Stdout,
 	}
 
 	c := &cobra.Command{

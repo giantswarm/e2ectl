@@ -5,6 +5,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/e2ectl/cmd/cluster/create"
@@ -17,9 +18,10 @@ const (
 )
 
 type Config struct {
-	Logger micrologger.Logger
-	Stderr io.Writer
-	Stdout io.Writer
+	FileSystem afero.Fs
+	Logger     micrologger.Logger
+	Stderr     io.Writer
+	Stdout     io.Writer
 }
 
 func New(config Config) (*cobra.Command, error) {
@@ -32,9 +34,10 @@ func New(config Config) (*cobra.Command, error) {
 	var createCmd *cobra.Command
 	{
 		c := create.Config{
-			Logger: config.Logger,
-			Stderr: config.Stderr,
-			Stdout: config.Stdout,
+			FileSystem: config.FileSystem,
+			Logger:     config.Logger,
+			Stderr:     config.Stderr,
+			Stdout:     config.Stdout,
 		}
 
 		createCmd, err = create.New(c)

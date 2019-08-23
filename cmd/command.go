@@ -6,6 +6,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/e2ectl/cmd/cluster"
@@ -20,9 +21,10 @@ const (
 )
 
 type Config struct {
-	Logger micrologger.Logger
-	Stderr io.Writer
-	Stdout io.Writer
+	FileSystem afero.Fs
+	Logger     micrologger.Logger
+	Stderr     io.Writer
+	Stdout     io.Writer
 
 	BinaryName string
 	GitCommit  string
@@ -30,6 +32,9 @@ type Config struct {
 }
 
 func New(config Config) (*cobra.Command, error) {
+	if config.FileSystem == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.FileSystem must not be empty", config)
+	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
@@ -52,9 +57,10 @@ func New(config Config) (*cobra.Command, error) {
 	var clusterCmd *cobra.Command
 	{
 		c := cluster.Config{
-			Logger: config.Logger,
-			Stderr: config.Stderr,
-			Stdout: config.Stdout,
+			FileSystem: config.FileSystem,
+			Logger:     config.Logger,
+			Stderr:     config.Stderr,
+			Stdout:     config.Stdout,
 		}
 
 		clusterCmd, err = cluster.New(c)
