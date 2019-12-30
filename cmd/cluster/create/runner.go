@@ -15,7 +15,6 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/kind/pkg/cluster"
-	"sigs.k8s.io/kind/pkg/cluster/create"
 )
 
 const (
@@ -61,12 +60,18 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		return nil
 	}
 
+	var provider *cluster.Provider
 	{
-		known, err := cluster.IsKnown(r.flag.Name)
+		provider = cluster.NewProvider()
+	}
+
+	{
+		// Check if the cluster name already exists.
+		n, err := provider.ListNodes(r.flag.Name)
 		if err != nil {
 			return err
 		}
-		if known {
+		if len(n) != 0 {
 			return microerror.Maskf(invalidFlagError, "cluster with name %#q already exists", r.flag.Name)
 		}
 	}
@@ -129,24 +134,25 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		}
 	}
 
-	kindCtx := cluster.NewContext(r.flag.Name)
-
-	clusterOptions := []create.ClusterOption{
-		create.Retain(r.flag.Retain),
-		create.WaitForReady(waitForReady),
-		create.WithConfigFile(configFile.Name()),
-	}
-
-	if r.flag.Version != "" {
-		image := fmt.Sprintf("%s:%s", r.flag.Image, r.flag.Version)
-		clusterOptions = append(clusterOptions, create.WithNodeImage(image))
+	var image string
+	{
+		image = fmt.Sprintf("%s:%s", r.flag.Image, r.flag.Version)
 	}
 
 	{
-		err = kindCtx.Create(clusterOptions...)
+		fmt.Printf("creating cluster %#q\n", r.flag.Name)
+
+		err = provider.Create(r.flag.Name,
+			cluster.CreateWithConfigFile(configFile.Name()),
+			cluster.CreateWithNodeImage(image),
+			cluster.CreateWithRetain(r.flag.Retain),
+			cluster.CreateWithWaitForReady(waitForReady),
+		)
 		if err != nil {
 			return microerror.Mask(err)
 		}
+
+		fmt.Printf("created cluster %#q\n", r.flag.Name)
 	}
 
 	return nil

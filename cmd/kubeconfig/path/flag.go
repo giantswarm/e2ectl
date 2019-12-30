@@ -7,14 +7,17 @@ import (
 )
 
 const (
-	flagName = "name"
+	flagKubeconfig = "kubeconfig"
+	flagName       = "name"
 )
 
 type flag struct {
-	Name string
+	Kubeconfig string
+	Name       string
 }
 
 func (f *flag) Init(cmd *cobra.Command) {
+	cmd.Flags().StringVar(&f.Kubeconfig, flagKubeconfig, "kind-kubeconfig", `Name of kubeconfig file.`)
 	cmd.Flags().StringVar(&f.Name, flagName, cluster.DefaultName, `Name of e2e cluster.`)
 }
 

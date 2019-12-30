@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"path"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -35,18 +37,41 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 }
 
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
+	var err error
+
+	var provider *cluster.Provider
 	{
-		known, err := cluster.IsKnown(r.flag.Name)
+		provider = cluster.NewProvider()
+	}
+
+	{
+		// Check if the cluster name exists.
+		n, err := provider.ListNodes(r.flag.Name)
 		if err != nil {
 			return err
 		}
-		if !known {
-			return microerror.Maskf(invalidFlagError, "cluster with name %#q doesn't exist", r.flag.Name)
+		if len(n) == 0 {
+			return microerror.Maskf(invalidFlagError, "cluster %#q does not exist", r.flag.Name)
 		}
 	}
 
-	kindCtx := cluster.NewContext(r.flag.Name)
-	kubeconfigPath := kindCtx.KubeConfigPath()
+	var kubeconfigPath string
+	{
+		dir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		kubeconfigPath = path.Join(dir, r.flag.Kubeconfig)
+	}
+
+	{
+		err = provider.ExportKubeConfig(r.flag.Name, kubeconfigPath)
+		if err != nil {
+			return err
+		}
+	}
+
 	fmt.Println(kubeconfigPath)
 
 	return nil
