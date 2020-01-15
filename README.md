@@ -2,6 +2,9 @@
 
 # e2ectl
 
+**Deprecated** We are replacing e2ectl with a job in [architect-orb].
+Development here is frozen.
+
 Command line tool for managing Kubernetes clusters for use in e2e (integration)
 tests. Uses [kind] (Kubernetes in Docker) to do this.
 
@@ -114,6 +117,7 @@ for details.
 - https://github.com/kubernetes-sigs/kind
 
 [app-operator]: https://github.com/giantswarm/app-operator
+[architect-orb]: https://github.com/giantswarm/architect-orb
 [kind]: https://kind.sigs.k8s.io/
 [operatorkit]: https://github.com/giantswarm/operatorkit
 [retagged-image]: https://quay.io/repository/giantswarm/kind-node
