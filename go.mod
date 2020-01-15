@@ -10,8 +10,7 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 // indirect
-	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/spf13/afero v1.2.2
 	github.com/spf13/cobra v0.0.5
-	sigs.k8s.io/kind v0.6.1
+	sigs.k8s.io/kind v0.7.0
 )
